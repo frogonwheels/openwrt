@@ -7,6 +7,17 @@
 
 USB_MENU:=USB Support
 
+ifneq ($(CONFIG_LINUX_2_4),)
+  USBNET_DIR:=usb/net
+endif
+
+# These two targets compile scsi-core internally
+SCSI_CORE_DEPENDS:=+!TARGET_x86:+kmod-scsi-core
+ifeq ($(CONFIG_TARGET_x86_Kontron)$(CONFIG_x86_Kontron)$(CONFIG_TARGET_x86_64bit)$(CONFIG_x86_64bit),)
+  SCSI_CORE_DEPENDS:=
+  SCSI_CORE_BUILTIN:=1
+endif
+
 USBNET_DIR:=net/usb
 USBHID_DIR?=hid/usbhid
 USBINPUT_DIR?=input/misc
@@ -579,6 +590,7 @@ $(eval $(call KernelPackage,usb-serial-option))
 
 
 define KernelPackage/usb-storage
+$(call KernelPackage/usb/Depends,$(SCSI_CORE_DEPENDS))
   TITLE:=USB Storage support
   DEPENDS:= +kmod-scsi-core
   KCONFIG:=CONFIG_USB_STORAGE
