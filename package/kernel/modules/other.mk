@@ -107,7 +107,6 @@ endef
 
 $(eval $(call KernelPackage,eeprom-93cx6))
 
-
 define KernelPackage/eeprom-at24
   SUBMENU:=$(OTHER_MENU)
   TITLE:=EEPROM AT24 support
@@ -123,7 +122,6 @@ endef
 
 $(eval $(call KernelPackage,eeprom-at24))
 
-
 define KernelPackage/eeprom-at25
   SUBMENU:=$(OTHER_MENU)
   TITLE:=EEPROM AT25 support
@@ -138,6 +136,21 @@ endef
 
 $(eval $(call KernelPackage,eeprom-at25))
 
+define KernelPackage/itco-wdt
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Intel TCO watchdog
+  DEPENDS:=
+  KCONFIG:=CONFIG_ITCO_WDT CONFIG_ITCO_VENDOR_SUPPORT=y
+  FILES:=$(LINUX_DIR)/drivers/$(WATCHDOG_DIR)/iTCO_wdt.$(LINUX_KMOD_SUFFIX) \
+	  $(LINUX_DIR)/drivers/$(WATCHDOG_DIR)/iTCO_vendor_support.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,50,iTCO_vendor_support iTCO_wdt)
+endef
+
+define KernelPackage/itco-wdt/description
+ Intel TCO watchdog
+endef
+
+$(eval $(call KernelPackage,itco-wdt))
 
 define KernelPackage/gpio-cs5535
   SUBMENU:=$(OTHER_MENU)
