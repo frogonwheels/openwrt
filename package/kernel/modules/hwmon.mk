@@ -24,6 +24,20 @@ endef
 
 $(eval $(call KernelPackage,hwmon-core))
 
+define KernelPackage/hwmon-coretemp
+  SUBMENU:=$(HWMON_MENU)
+  TITLE:=Intel Core 2 monitoring support
+  DEPENDS:=kmod-hwmon-core +kmod-i2c-core
+  KCONFIG:=CONFIG_SENSORS_CORETEMP
+  FILES:=$(LINUX_DIR)/drivers/hwmon/coretemp.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,60,coretemp)
+endef
+
+define KernelPackage/hwmon-coretemp/description
+ Kernel module for Intel Core 2 Duo thermal monitor
+endef
+
+$(eval $(call KernelPackage,hwmon-coretemp))
 
 define AddDepends/hwmon
   SUBMENU:=$(HWMON_MENU)
@@ -58,7 +72,6 @@ define KernelPackage/hwmon-lm75/description
 endef
 
 $(eval $(call KernelPackage,hwmon-lm75))
-
 
 define KernelPackage/hwmon-lm77
   TITLE:=LM77 monitoring support
