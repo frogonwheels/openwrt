@@ -73,6 +73,9 @@ endif
 ifeq ($(ARCH),i686)
   HAL_TARGET:=i386-elf
 endif
+ifeq ($(ARCH),x86_64)
+  HAL_TARGET:=x86_64-elf
+endif
 ifeq ($(ARCH),armeb)
   HAL_TARGET:=xscale-be-elfgnueabi
 endif
@@ -94,6 +97,7 @@ endif
 ifneq ($(CONFIG_TARGET_atheros),)
   HAL_TARGET:=wisoc
 endif
+
 
 ifdef CONFIG_MADWIFI_RCA_MINSTREL
   RATE_CONTROL:=minstrel
