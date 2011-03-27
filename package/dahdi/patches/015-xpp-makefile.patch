@@ -1,0 +1,13 @@
+Index: dahdi-linux-complete-2.2.0.2+2.2.0/tools/xpp/Makefile
+===================================================================
+--- dahdi-linux-complete-2.2.0.2+2.2.0.orig/tools/xpp/Makefile	2009-08-17 19:14:09.647886807 +0800
++++ dahdi-linux-complete-2.2.0.2+2.2.0/tools/xpp/Makefile	2009-08-17 19:14:27.701548293 +0800
+@@ -38,7 +38,7 @@
+ HOSTCC		?= $(CC)
+ 
+ 
+-CFLAGS		= -g -Wall $(EXTRA_CFLAGS)
++CFLAGS		+= -g -Wall $(EXTRA_CFLAGS)
+ 
+ %.8: %
+ 	pod2man --section 8 $^ > $@ || $(RM) $@

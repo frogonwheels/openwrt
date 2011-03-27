@@ -1,0 +1,21 @@
+Index: dahdi-linux-complete-2.2.0.2+2.2.0/tools/Makefile
+===================================================================
+--- dahdi-linux-complete-2.2.0.2+2.2.0.orig/tools/Makefile	2009-08-17 17:51:39.079886475 +0800
++++ dahdi-linux-complete-2.2.0.2+2.2.0/tools/Makefile	2009-08-17 17:51:54.953779864 +0800
+@@ -104,14 +104,14 @@
+ CONFIG_FILE:=$(CONFIG_DIR)/system.conf
+ 
+ # Utilities we build with a standard build procedure:
+-UTILS		= dahdi_tool dahdi_test dahdi_monitor dahdi_speed sethdlc dahdi_cfg \
++UTILS		= dahdi_test dahdi_monitor dahdi_speed sethdlc dahdi_cfg \
+ 		  fxstest fxotune dahdi_diag dahdi_scan
+ 
+ # some tests:
+ UTILS		+= patgen pattest patlooptest hdlcstress hdlctest hdlcgen \
+ 		   hdlcverify timertest
+ 
+-BINS:=fxotune fxstest sethdlc dahdi_cfg dahdi_diag dahdi_monitor dahdi_speed dahdi_test dahdi_scan dahdi_tool
++BINS:=fxotune fxstest sethdlc dahdi_cfg dahdi_diag dahdi_monitor dahdi_speed dahdi_test dahdi_scan
+ BINS:=$(filter-out $(MENUSELECT_UTILS),$(BINS))
+ MAN_PAGES:=$(wildcard $(BINS:%=doc/%.8))
+ 
