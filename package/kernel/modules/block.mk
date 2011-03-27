@@ -74,6 +74,52 @@ endef
 
 $(eval $(call KernelPackage,ata-artop))
 
+define KernelPackage/ata-octeon-cf
+$(call KernelPackage/ata/Depends,@TARGET_octeon)
+  TITLE:=Octeon Compact Flash support
+  KCONFIG:=CONFIG_PATA_OCTEON_CF
+  FILES:=$(LINUX_DIR)/drivers/ata/pata_octeon_cf.ko
+  AUTOLOAD:=$(call AutoLoad,41,pata_octeon_cf,1)
+endef
+
+define KernelPackage/ata-octeon-cf/description
+  Octeon Compact Flash support.
+endef
+
+$(eval $(call KernelPackage,ata-octeon-cf))
+
+
+define KernelPackage/ata-ixp4xx-cf
+$(call KernelPackage/ata/Depends,@TARGET_ixp4xx)
+  TITLE:=IXP4XX Compact Flash support
+  KCONFIG:=CONFIG_PATA_IXP4XX_CF
+  FILES:=$(LINUX_DIR)/drivers/ata/pata_ixp4xx_cf.ko
+  AUTOLOAD:=$(call AutoLoad,41,pata_ixp4xx_cf,1)
+endef
+
+define KernelPackage/ata-ixp4xx-cf/description
+ IXP4XX Compact Flash support.
+endef
+
+$(eval $(call KernelPackage,ata-ixp4xx-cf))
+
+define KernelPackage/ata-rb532-cf
+$(call KernelPackage/ata/Depends,@TARGET_rb532 @BROKEN)
+  TITLE:=RB532 Compact Flash support
+  KCONFIG:= \
+  	CONFIG_PATA_PLATFORM \
+  	CONFIG_PATA_RB532
+  FILES:=\
+  	$(LINUX_DIR)/drivers/ata/pata_platform.ko \
+  	$(LINUX_DIR)/drivers/ata/pata_rb532_cf.ko
+  AUTOLOAD:=$(call AutoLoad,41,pata_platform pata_rb532_cf,1)
+endef
+
+define KernelPackage/ata-rb532-cf/description
+  RB532 Compact Flash support.
+endef
+
+$(eval $(call KernelPackage,ata-rb532-cf))
 
 define KernelPackage/ata-nvidia-sata
   TITLE:=Nvidia Serial ATA support
@@ -85,6 +131,20 @@ endef
 
 $(eval $(call KernelPackage,ata-nvidia-sata))
 
+
+define KernelPackage/ata-magicbox-cf
+$(call KernelPackage/ata/Depends,@TARGET_ppc40x)
+  TITLE:=Magicbox v2/OpenRB Compact flash support
+  KCONFIG:=CONFIG_PATA_MAGICBOX_CF
+  FILES:=$(LINUX_DIR)/drivers/ata/pata_magicbox_cf.ko
+  AUTOLOAD:=$(call AutoLoad,41,pata_magicbox_cf,1)
+endef
+
+define KernelPackage/ata-magicbox-cf/description
+  Support for Magicbox v2/OpenRB on-board CF slot.
+endef
+
+$(eval $(call KernelPackage,ata-magicbox-cf))
 
 define KernelPackage/ata-pdc202xx-old
   SUBMENU:=$(BLOCK_MENU)
@@ -579,7 +639,7 @@ define KernelPackage/mvsas
   TITLE:=Marvell 88SE6440 SAS/SATA driver
   DEPENDS:=@TARGET_x86 +kmod-libsas
   KCONFIG:=CONFIG_SCSI_MVSAS
-  ifneq ($(CONFIG_LINUX_2_6_30),)
+  ifneq ($(CONFIG_LINUX_2_6_25)$(CONFIG_LINUX_2_6_30),)
 	FILES:=$(LINUX_DIR)/drivers/scsi/mvsas.ko
   else
 	FILES:=$(LINUX_DIR)/drivers/scsi/mvsas/mvsas.ko
@@ -647,7 +707,6 @@ endef
 
 $(eval $(call KernelPackage,scsi-generic))
 
-
 define KernelPackage/scsi-cdrom
   SUBMENU:=$(BLOCK_MENU)
   TITLE:=Kernel support for CD / DVD drives
@@ -663,3 +722,132 @@ endef
 
 $(eval $(call KernelPackage,scsi-cdrom))
 
+define KernelPackage/dm
+  SUBMENU:=$(BLOCK_MENU)
+  TITLE:=Device Mapper
+  # All the "=n" are unnecessary, they're only there
+  # to stop the config from asking the question.
+  # MIRROR is M because I've needed it for pvmove.
+  KCONFIG:= \
+       CONFIG_BLK_DEV_MD=n \
+       CONFIG_DM_DEBUG=n \
+       CONFIG_DM_CRYPT=n \
+       CONFIG_DM_UEVENT=n \
+       CONFIG_DM_DELAY=n \
+       CONFIG_DM_MULTIPATH=n \
+       CONFIG_DM_ZERO=n \
+       CONFIG_DM_SNAPSHOT=n \
+       CONFIG_DM_LOG_USERSPACE=n \
+       CONFIG_MD=y \
+       CONFIG_BLK_DEV_DM \
+       CONFIG_DM_MIRROR
+  FILES:=$(LINUX_DIR)/drivers/md/dm-*.ko
+  AUTOLOAD:=$(call AutoLoad,30,dm-mod dm-log dm-region-hash dm-mirror)
+endef
+
+define KernelPackage/dm/description
+ Kernel module necessary for LVM2 support
+endef
+
+$(eval $(call KernelPackage,dm))
+
+
+define KernelPackage/pata-rb153-cf
+$(call KernelPackage/ata/Depends,@TARGET_adm5120_router_le)
+  TITLE:=RouterBOARD 153 CF Slot support
+  KCONFIG:=CONFIG_PATA_RB153_CF
+  FILES:=$(LINUX_DIR)/drivers/ata/pata_rb153_cf.ko
+  AUTOLOAD:=$(call AutoLoad,30,pata_rb153_cf,1)
+endef
+
+define KernelPackage/pata-rb153-cf/description
+  Kernel support for the RouterBoard 153 CF slot.
+endef
+
+$(eval $(call KernelPackage,pata-rb153-cf,1))
+
+
+define KernelPackage/aoe
+  SUBMENU:=$(BLOCK_MENU)
+  TITLE:=ATA over Ethernet support
+  KCONFIG:=CONFIG_ATA_OVER_ETH
+  FILES:=$(LINUX_DIR)/drivers/block/aoe/aoe.ko
+  AUTOLOAD:=$(call AutoLoad,30,aoe)
+endef
+
+define KernelPackage/aoe/description
+  Kernel support for ATA over Ethernet
+endef
+
+$(eval $(call KernelPackage,aoe))
+
+define KernelPackage/ps3vram
+  SUBMENU:=$(BLOCK_MENU)
+  TITLE:=PS3 Video RAM Storage Driver
+  DEPENDS:=@TARGET_ps3||TARGET_ps3chk
+  KCONFIG:=CONFIG_PS3_VRAM
+  FILES:=$(LINUX_DIR)/drivers/block/ps3vram.ko
+  AUTOLOAD:=$(call AutoLoad,01,ps3vram)
+endef
+
+define KernelPackage/ps3vram/description
+  Kernel support for PS3 Video RAM Storage
+endef
+
+$(eval $(call KernelPackage,ps3vram))
+
+define KernelPackage/axonram
+  SUBMENU:=$(BLOCK_MENU)
+  TITLE:=Axon DDR2 memory device driver
+  DEPENDS:=@TARGET_pxcab
+  KCONFIG:=CONFIG_AXON_RAM
+  FILES:=$(LINUX_DIR)/arch/powerpc/sysdev/axonram.ko
+  AUTOLOAD:=$(call AutoLoad,01,axonram)
+endef
+
+define KernelPackage/axonram/description
+  Kernel support for Axon DDR2 memory device
+endef
+
+$(eval $(call KernelPackage,axonram))
+
+define KernelPackage/libsas
+  SUBMENU:=$(BLOCK_MENU)
+  TITLE:=SAS Domain Transport Attributes
+  DEPENDS:=$(SCSI_CORE_DEPENDS) @TARGET_x86
+  KCONFIG:=CONFIG_SCSI_SAS_LIBSAS \
+	CONFIG_SCSI_SAS_ATTRS \
+	CONFIG_SCSI_SAS_ATA=y \
+	CONFIG_SCSI_SAS_HOST_SMP=y \
+	CONFIG_SCSI_SAS_LIBSAS_DEBUG=y \
+	CONFIG_SCSI_SAS_ATA=y
+  FILES:= \
+	$(LINUX_DIR)/drivers/scsi/scsi_transport_sas.ko \
+	$(LINUX_DIR)/drivers/scsi/libsas/libsas.ko
+  AUTOLOAD:=$(call AutoLoad,29,scsi_transport_sas libsas,1)
+endef
+
+define KernelPackage/libsas/description
+  SAS Domain Transport Attributes support.
+endef
+
+$(eval $(call KernelPackage,libsas,1))
+
+define KernelPackage/mvsas
+  SUBMENU:=$(BLOCK_MENU)
+  TITLE:=Marvell 88SE6440 SAS/SATA driver
+  DEPENDS:=@TARGET_x86 +kmod-libsas
+  KCONFIG:=CONFIG_SCSI_MVSAS
+  ifneq ($(CONFIG_LINUX_2_6_25)$(CONFIG_LINUX_2_6_30),)
+	FILES:=$(LINUX_DIR)/drivers/scsi/mvsas.ko
+  else
+	FILES:=$(LINUX_DIR)/drivers/scsi/mvsas/mvsas.ko
+  endif
+  AUTOLOAD:=$(call AutoLoad,40,mvsas,1)
+endef
+
+define KernelPackage/mvsas/description
+  Kernel support for the Marvell SAS SCSI adapters
+endef
+
+$(eval $(call KernelPackage,mvsas))
