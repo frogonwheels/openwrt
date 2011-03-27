@@ -46,7 +46,7 @@ endif
 
 # XXX: {e,}glibc does not build w/ -Os
 # http://sourceware.org/bugzilla/show_bug.cgi?id=5203
-GLIBC_CFLAGS:=$(subst -Os,-O2,$(TARGET_CFLAGS))
+GLIBC_CFLAGS:=$(subst -Os,-O2,$(TARGET_CFLAGS)) -fno-stack-protector
 
 GLIBC_CONFIGURE:= \
 	BUILD_CC="$(HOSTCC)" \
@@ -98,8 +98,10 @@ endef
 define Stage1/Configure
 	mkdir -p $(HOST_BUILD_DIR1)
 	( cd $(HOST_BUILD_DIR1); rm -f config.cache; \
-		$(GLIBC_CONFIGURE_STAGE1) \
+		$(GLIBC_CONFIGURE_STAGE1) ; \
+	  echo "CFLAGS += -fno-stack-protector" > configparms \
 	);
+	echo "CFLAGS += -fno-stack-protector" > $(HOST_BUILD_DIR)/configparms
 endef
 
 define Stage1/Compile
@@ -121,8 +123,12 @@ endef
 define Stage2/Configure
 	mkdir -p $(HOST_BUILD_DIR2)
 	( cd $(HOST_BUILD_DIR2); rm -f config.cache; \
-		$(GLIBC_CONFIGURE_STAGE2) \
+		$(GLIBC_CONFIGURE_STAGE2) ; \
+	  echo "CFLAGS += -fno-stack-protector" > configparms ;\
+	  echo "user-defined-trusted-dirs=/usr/lib" >> configparms \
 	);
+	echo "CFLAGS += -fno-stack-protector" > $(HOST_BUILD_DIR)/configparms
+	echo "user-defined-trusted-dirs=/usr/lib" >> $(HOST_BUILD_DIR)/configparms
 endef
 
 define Stage2/Compile
