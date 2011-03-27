@@ -163,9 +163,13 @@ define Package/e2fsprogs/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/e2fsck $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/mke2fs $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/fsck $(1)/usr/sbin/
 	ln -sf mke2fs $(1)/usr/sbin/mkfs.ext2
 	ln -sf mke2fs $(1)/usr/sbin/mkfs.ext3
 	ln -sf mke2fs $(1)/usr/sbin/mkfs.ext4
+	ln -sf e2fsck $(1)/usr/sbin/fsck.ext2
+	ln -sf e2fsck $(1)/usr/sbin/fsck.ext3
+	ln -sf e2fsck $(1)/usr/sbin/fsck.ext4
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libe2p.so.* $(1)/usr/lib/
 	$(INSTALL_DIR) $(1)/etc/init.d
