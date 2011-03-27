@@ -74,11 +74,8 @@ ifneq ($(CONFIG_X86_GRUB_IMAGES),)
 
   define Image/Prepare/grub
 	# for the image builder
-	$(CP) \
-		$(STAGING_DIR)/usr/lib/grub/i386-openwrt/stage1 \
-		$(STAGING_DIR)/usr/lib/grub/i386-openwrt/stage2 \
-		$(STAGING_DIR)/usr/lib/grub/i386-openwrt/stage2_eltorito \
-		$(STAGING_DIR)/usr/lib/grub/i386-openwrt/e2fs_stage1_5 \
+	grub_dir=$$$$(ls -d $(STAGING_DIR)/usr/lib/grub/{i386,x86_64}-* 2>&- |head -1 ) ; \
+	$(CP)   $$$${grub_dir}/stage{1,2,2_eltorito} $$$${grub_dir}/e2fs_stage1_5 \
 		$(KDIR)/
   endef
 
