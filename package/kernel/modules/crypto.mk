@@ -7,6 +7,11 @@
 
 CRYPTO_MENU:=Cryptographic API modules
 
+ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),ge,2.6.25)),1)
+  CRYPTO_PREFIX:=crypto_
+  BLKCIPHER_PREFIX:=$(CRYPTO_PREFIX)
+endif
+
 CRYPTO_MODULES = ALGAPI2=crypto_algapi
 
 CRYPTOMGR_MODULES = \
@@ -196,9 +201,16 @@ define KernelPackage/crypto-aes
   $(call AddDepends/crypto)
 endef
 
+ifeq ($(ARCH),i386)
+  crypto_arch=i586
+else
+  crypto_arch=$(ARCH)
+endif
+
+
 define KernelPackage/crypto-aes/x86
-  FILES+=$(LINUX_DIR)/arch/x86/crypto/aes-i586.ko
-  AUTOLOAD:=$(call AutoLoad,09,aes_generic aes-i586)
+  FILES+=$(LINUX_DIR)/arch/x86/crypto/aes-$(crypto_arch).$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,09,aes_generic aes-$(crypto_arch))
 endef
 
 $(eval $(call KernelPackage,crypto-aes))
