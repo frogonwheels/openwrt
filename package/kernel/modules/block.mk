@@ -25,7 +25,7 @@ $(eval $(call KernelPackage,aoe))
 define KernelPackage/ata-core
   SUBMENU:=$(BLOCK_MENU)
   TITLE:=Serial and Parallel ATA support
-  DEPENDS:=@PCI_SUPPORT +kmod-scsi-core @(!TARGET_ubicom32||!TARGET_etrax)
+  DEPENDS:=@PCI_SUPPORT @LINUX_2_6 $(SCSI_CORE_DEPENDS) @(!TARGET_ubicom32||!TARGET_etrax||!TARGET_x86)
   KCONFIG:=CONFIG_ATA
   FILES:=$(LINUX_DIR)/drivers/ata/libata.ko
   AUTOLOAD:=$(call AutoLoad,21,libata,1)
@@ -609,6 +609,15 @@ endef
 $(eval $(call KernelPackage,nbd))
 
 
+SCSI_CORE_BUILTIN:=0
+SCSI_CORE_DEPENDS:=+kmod-scsi-core
+
+ifeq ($(CONFIG_TARGET_x86_Kontron)$(CONFIG_x86_Kontron)$(CONFIG_TARGET_x86_64bit)$(CONFIG_x86_64bit),)
+  SCSI_CORE_DEPENDS:=
+  SCSI_CORE_BUILTIN:=1
+endif
+
+ifeq ($(SCSI_CORE_BUILTIN),0)
 define KernelPackage/scsi-core
   SUBMENU:=$(BLOCK_MENU)
   TITLE:=SCSI device support
@@ -616,12 +625,13 @@ define KernelPackage/scsi-core
 	CONFIG_SCSI \
 	CONFIG_BLK_DEV_SD
   FILES:= \
-	$(if $(findstring y,$(CONFIG_SCSI)),,$(LINUX_DIR)/drivers/scsi/scsi_mod.ko) \
-	$(LINUX_DIR)/drivers/scsi/sd_mod.ko
+	$(if $(findstring y,$(CONFIG_SCSI)),,$(LINUX_DIR)/drivers/scsi/scsi_mod.$(LINUX_KMOD_SUFFIX)) \
+	$(LINUX_DIR)/drivers/scsi/sd_mod.$(LINUX_KMOD_SUFFIX)
   AUTOLOAD:=$(call AutoLoad,20,scsi_mod,1) $(call AutoLoad,40,sd_mod,1)
 endef
 
 $(eval $(call KernelPackage,scsi-core))
+endif
 
 
 define KernelPackage/scsi-generic
