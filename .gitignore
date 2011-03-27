@@ -1,6 +1,7 @@
 *.o
 .DS_Store
-.*.swp
+.*.sw?
+.sw?
 /env
 /dl
 /.config
@@ -18,3 +19,15 @@
 *.orig
 *.rej
 *~
+.svn/*
+**/.svn/*
+.svn/
+build_*.txt
+/initfiles
+makeinitrd
+*.new
+makekernel
+makesure
+totalbuild
+upload
+Session.vim
