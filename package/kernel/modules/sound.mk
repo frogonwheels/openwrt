@@ -33,7 +33,8 @@ SOUNDCORE_LOAD ?= \
 	snd-timer \
 	snd-pcm \
 	snd-mixer-oss \
-	snd-pcm-oss
+	snd-pcm-oss \
+	snd-seq-dummy
 
 SOUNDCORE_FILES ?= \
 	$(LINUX_DIR)/sound/soundcore.ko \
@@ -45,7 +46,8 @@ SOUNDCORE_FILES ?= \
 	$(LINUX_DIR)/sound/core/snd-timer.ko \
 	$(LINUX_DIR)/sound/core/snd-pcm.ko \
 	$(LINUX_DIR)/sound/core/oss/snd-mixer-oss.ko \
-	$(LINUX_DIR)/sound/core/oss/snd-pcm-oss.ko
+	$(LINUX_DIR)/sound/core/oss/snd-pcm-oss.ko \
+	$(LINUX_DIR)/sound/core/seq/snd-seq-dummy.ko
 
 define KernelPackage/sound-core
   SUBMENU:=$(SOUND_MENU)
@@ -125,6 +127,173 @@ endef
 
 $(eval $(call KernelPackage,sound-i8x0))
 
+define KernelPackage/sound-intel-hd
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio
+  DEPENDS:=kmod-sound-core
+  KCONFIG:=CONFIG_SND_PCI=y CONFIG_SND_HDA_INTEL CONFIG_SND_HDA_INPUT_BEEP=y CONFIG_SND_HDA_HWDEP=y \
+	CONFIG_SND_HDA_CODEC_SIGMATEL=y  CONFIG_SND_HDA_ELD=y CONFIG_SND_HDA_GENERIC=y \
+	CONFIG_SND_HDA_POWER_SAVE=y CONFIG_SND_HDA_POWER_SAVE_DEFAULT=30
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-intel.$(LINUX_KMOD_SUFFIX) \
+  	 $(LINUX_DIR)/sound/pci/hda/snd-hda-codec.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-hda-codec snd-hda-intel)
+endef
+
+define KernelPackage/sound-intel-hd/description
+ support for the integrated Intel HD sound device
+endef
+$(eval $(call KernelPackage,sound-intel-hd))
+
+define KernelPackage/sound-intel-codec-analog
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Analog
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_ANALOG=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-analog.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-analog)
+endef
+define KernelPackage/sound-intel-codec-analog/description
+ Integrated Intel HD sound device - analog codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-analog))
+
+define KernelPackage/sound-intel-codec-conexant
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Conexant
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_CONEXANT=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-conexant.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-conexant)
+endef
+define KernelPackage/sound-intel-codec-conexant/description
+ Integrated Intel HD sound device - conexant codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-conexant))
+define KernelPackage/sound-intel-codec-si3054
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Si3054
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_SI3054=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-si3054.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-si3054)
+endef
+define KernelPackage/sound-intel-codec-si3054/description
+ Integrated Intel HD sound device - si3054 codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-si3054))
+define KernelPackage/sound-intel-codec-atihdmi
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Atihdmi
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_ATIHDMI=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-atihdmi.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-atihdmi)
+endef
+define KernelPackage/sound-intel-codec-atihdmi/description
+ Integrated Intel HD sound device - atihdmi codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-atihdmi))
+define KernelPackage/sound-intel-codec-idt
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Idt
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_SIGMATEL=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-idt.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-idt)
+endef
+define KernelPackage/sound-intel-codec-idt/description
+ Integrated Intel HD sound device - idt codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-idt))
+define KernelPackage/sound-intel-codec-nvhdmi
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Nvhdmi
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_NVHDMI=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-nvhdmi.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-nvhdmi)
+endef
+define KernelPackage/sound-intel-codec-nvhdmi/description
+ Integrated Intel HD sound device - nvhdmi codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-nvhdmi))
+define KernelPackage/sound-intel-codec-via
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Via
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_VIA=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-via.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-via)
+endef
+define KernelPackage/sound-intel-codec-via/description
+ Integrated Intel HD sound device - via codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-via))
+define KernelPackage/sound-intel-codec-cmedia
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Cmedia
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_CMEDIA=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-cmedia.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-cmedia)
+endef
+define KernelPackage/sound-intel-codec-cmedia/description
+ Integrated Intel HD sound device - cmedia codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-cmedia))
+define KernelPackage/sound-intel-codec-intelhdmi
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Intelhdmi
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_INTELHDMI=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-intelhdmi.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-intelhdmi)
+endef
+define KernelPackage/sound-intel-codec-intelhdmi/description
+ Integrated Intel HD sound device - intelhdmi codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-intelhdmi))
+define KernelPackage/sound-intel-codec-realtek
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Intel HD Audio Codec Realtek
+  DEPENDS:=kmod-sound-intel-hd
+  KCONFIG:=CONFIG_SND_HDA_HWDEP=y CONFIG_SND_HDA_CODEC_REALTEK=y
+
+  FILES:=$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-realtek.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd-intel-codec-realtek)
+endef
+define KernelPackage/sound-intel-codec-realtek/description
+ Integrated Intel HD sound device - realtek codec
+endef
+$(eval $(call KernelPackage,sound-intel-codec-realtek))
+
+
+define KernelPackage/sound-ps3
+$(call KernelPackage/sound/Depends,@TARGET_ps3||TARGET_ps3chk)
+  TITLE:=PS3 Audio
+  KCONFIG:=CONFIG_SND_PS3 \
+		CONFIG_SND_PPC=y \
+		CONFIG_SND_PS3_DEFAULT_START_DELAY=2000
+  FILES:=$(LINUX_DIR)/sound/ppc/snd_ps3.$(LINUX_KMOD_SUFFIX)
+  AUTOLOAD:=$(call AutoLoad,35, snd_ps3)
+endef
+
+define KernelPackage/sound-ps3/description
+ support for the integrated PS3 audio device
+endef
+
+$(eval $(call KernelPackage,sound-ps3))
+
 
 define KernelPackage/sound-cs5535audio
   TITLE:=CS5535 PCI Controller
@@ -140,6 +309,21 @@ define KernelPackage/sound-cs5535audio/description
 endef
 
 $(eval $(call KernelPackage,sound-cs5535audio))
+
+define KernelPackage/sound-timer
+  SUBMENU:=$(SOUND_MENU)
+  TITLE:=Sound timer
+  DEPENDS:=kmod-sound-core
+  KCONFIG:=CONFIG_SND_TIMER
+  FILES:=$(LINUX_DIR)/sound/core/snd-timer.$(LINUX_KMOD_SUFFIX) 
+  AUTOLOAD:=$(call AutoLoad,35,snd-timer)
+endef
+
+define KernelPackage/sound-timer/description
+ support for sound timer.
+endef
+
+$(eval $(call KernelPackage,sound-timer))
 
 
 define KernelPackage/sound-soc-core
