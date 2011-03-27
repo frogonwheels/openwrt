@@ -21,12 +21,12 @@ reload() {
 
 restart() {
 	trap '' TERM
-	stop "$@"
-	start "$@"
+	stop
+	start
 }
 
 boot() {
-	start "$@"
+	start
 }
 
 shutdown() {
@@ -35,24 +35,53 @@ shutdown() {
 
 disable() {
 	name="$(basename "${initscript}")"
-	rm -f "$IPKG_INSTROOT"/etc/rc.d/S??$name
-	rm -f "$IPKG_INSTROOT"/etc/rc.d/K??$name
+	if [ -z "${IPKG_INSTROOT}" ]; then
+		basedir=${initscript%/[^/]*}
+		[ -z ${basedir} ] || cd "${basedir}"
+		cd ../rc.d
+	else
+		cd "${IPKG_INSTROOT}"/etc/rc.d
+	fi
+	
+	stripname=${name##[SK][0-9][0-9]}
+	rm -f [SK]??$stripname
 }
 
 enable() {
 	name="$(basename "${initscript}")"
-	disable
+
 	[ -n "$START" -o -n "$STOP" ] || {
 		echo "/etc/init.d/$name does not have a START or STOP value"
 		return 1
 	}
-	[ "$START" ] && ln -s "../init.d/$name" "$IPKG_INSTROOT/etc/rc.d/S${START}${name##S[0-9][0-9]}"
-	[ "$STOP"  ] && ln -s "../init.d/$name" "$IPKG_INSTROOT/etc/rc.d/K${STOP}${name##K[0-9][0-9]}"
+	if [ -z "${IPKG_INSTROOT}" ]; then
+		basedir=${initscript%/[^/]*}
+		[ -z ${basedir} ] || cd "${basedir}"
+		cd ../rc.d
+	else
+		cd "${IPKG_INSTROOT}/etc/rc.d"
+	fi
+
+	stripname=${name##[SK][0-9][0-9]}
+	rm -f "[SK]??${stripname}"
+
+	[ -n "${START}" ] && ln -s "../init.d/$name" S${START}${stripname}
+	[ -n "${STOP}" ] && ln -s "../init.d/$name" K${STOP}${stripname}
 }
 
 enabled() {
 	name="$(basename "${initscript}")"
-	[ -x "$IPKG_INSTROOT/etc/rc.d/S${START}${name##S[0-9][0-9]}" ]
+
+	if [ -z "${IPKG_INSTROOT}" ]; then
+		basedir=${initscript%/[^/]*}
+		[ -z "$basedir" ] || cd "$basedir"
+		cd ../rc.d
+	else
+		cd "${IPKG_INSTROOT}/etc/rc.d"
+	fi
+
+	stripname=${name##[SK][0-9][0-9]}
+	[ -x "S${START}${stripname}" ]
 }
 
 depends() {
@@ -70,7 +99,7 @@ Available commands:
 	reload	Reload configuration files (or restart if that fails)
 	enable	Enable service autostart
 	disable	Disable service autostart
-$EXTRA_HELP
+${EXTRA_HELP}
 EOF
 }
 
