@@ -1,0 +1,28 @@
+--- a/pppd/plugins/pppoatm/pppoatm.c
++++ b/pppd/plugins/pppoatm/pppoatm.c
+@@ -207,11 +207,13 @@ static void recv_config_pppoa(int mru,
+ 		mru = pppoatm_max_mru;
+ 	}
+ }
++#ifdef linux
++static const int new_style_driver = 1;
++#endif
+ 
+ void plugin_init(void)
+ {
+ #ifdef linux
+-	extern int new_style_driver;	/* From sys-linux.c */
+ 	if (!ppp_available() && !new_style_driver)
+ 		fatal("Kernel doesn't support ppp_generic - "
+ 		    "needed for PPPoATM");
+--- a/pppd/plugins/rp-pppoe/plugin.c
++++ b/pppd/plugins/rp-pppoe/plugin.c
+@@ -56,7 +56,7 @@ static char const RCSID[] =
+ char pppd_version[] = VERSION;
+ 
+ /* From sys-linux.c in pppd -- MUST FIX THIS! */
+-extern int new_style_driver;
++static const int new_style_driver = 1;
+ 
+ char *pppd_pppoe_service = NULL;
+ static char *acName = NULL;
