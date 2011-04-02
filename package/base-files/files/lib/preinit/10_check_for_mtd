@@ -4,8 +4,21 @@
 # Copyright (C) 2010 Vertical Communications
 
 mount_no_mtd() {
-    mtd unlock rootfs
-    mount -o remount,rw /dev/root /
+    echo "- Mount no mtd -"
+    mtd unlock rootfs || true
+    if [ -b  /dev/root ] ; then
+        mount -o remount,rw /dev/root /
+    else
+	[ -z "${rootfs}" ] && rootfs=`sed -ne 's/.*root=\([^[:space:]]\+\).*/\1/p' /proc/cmdline`
+
+	if [ -n "${rootfs}" ] ; then
+	    if [ -b ${rootfs} ] ; then
+		mount -o remount,rw ${rootfs} /
+	    else
+		echo "Unable to mount ${rootfs}"
+	    fi
+	fi
+    fi
 }
 
 check_for_mtd() {

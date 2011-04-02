@@ -1,0 +1,18 @@
+#!/bin/sh
+check_for_root() {
+    if [ -b  /dev/root ] ; then
+	rootfs=/dev/root
+    else
+	rootfs=`sed -ne 's/.*root=\([^[:space:]]\+\).*/\1/p' /proc/cmdline`
+
+	if [ -n "${rootfs}" ] ; then
+	    if [ ! -b ${rootfs} ] ; then
+		echo "Invalid rootfs ${rootfs}"
+		rootfs=
+	    else
+		echo "Found rootfs on ${rootfs}"
+	    fi
+	fi
+    fi
+}
+boot_hook_add preinit_find_root check_for_root

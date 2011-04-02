@@ -1,0 +1,21 @@
+#!/bin/sh
+# Copyright (C) 2010 Michael Geddes
+
+initrd_pivot() {
+    echo "pivot:  /${root}/"
+    boot_run_hook preinit_find_root
+
+    if [ -n "${root}" ] ; then
+	echo Mounting ${root} for pivot
+        mount -o remount,rw ${root} /mnt
+        mkdir -p /mnt/ram
+        pivot /mnt /ram
+        umount /ram
+    else
+        echo Root invalid, not mounting.
+
+    fi
+}
+
+boot_hook_add initramfs initrd_pivot
+

@@ -3,6 +3,7 @@
 # Copyright (C) 2010 Vertical Communications
 
 do_mount_no_mtd() {
+	echo "Check for mount-no-mtd"
     check_skip || {
 	mount_no_mtd
     }
