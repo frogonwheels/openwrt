@@ -1,0 +1,22 @@
+Index: linux-2.6.31.6/lib/decompress_unlzo.c
+===================================================================
+--- linux-2.6.31.6.orig/lib/decompress_unlzo.c	2009-12-03 19:23:50.667613393 +0800
++++ linux-2.6.31.6/lib/decompress_unlzo.c	2009-12-03 19:25:04.448485616 +0800
+@@ -50,7 +50,7 @@
+ #define LZO_BLOCK_SIZE        (256*1024l)
+ #define HEADER_HAS_FILTER      0x00000800L
+ 
+-STATIC inline int INIT parse_header(u8 *input, u8 *skip)
++STATIC inline int parse_header(u8 *input, u8 *skip)
+ {
+ 	int l;
+ 	u8 *parse = input;
+@@ -87,7 +87,7 @@
+ 	return 1;
+ }
+ 
+-STATIC inline int INIT unlzo(u8 *input, int in_len,
++STATIC inline int unlzo(u8 *input, int in_len,
+ 				int (*fill) (void *, unsigned int),
+ 				int (*flush) (void *, unsigned int),
+ 				u8 *output, int *posp,
