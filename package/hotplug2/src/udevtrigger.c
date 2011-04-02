@@ -36,6 +36,51 @@
 static int verbose;
 static int dry_run;
 
+#ifdef __GLIBC__
+size_t strlcpy(char *dst, const char *src, size_t size)
+{
+	size_t bytes = 0;
+	char *q = dst;
+	const char *p = src;
+	char ch;
+
+	while ((ch = *p++)) {
+		if (bytes+1 < size)
+			*q++ = ch;
+		bytes++;
+	}
+
+	/* If size == 0 there is no space for a final null... */
+	if (size)
+		*q = '\0';
+	return bytes;
+}
+
+size_t strlcat(char *dst, const char *src, size_t size)
+{
+	size_t bytes = 0;
+	char *q = dst;
+	const char *p = src;
+	char ch;
+
+	while (bytes < size && *q) {
+		q++;
+		bytes++;
+	}
+	if (bytes == size)
+		return (bytes + strlen(src));
+
+	while ((ch = *p++)) {
+		if (bytes+1 < size)
+		*q++ = ch;
+		bytes++;
+	}
+
+	*q = '\0';
+	return bytes;
+}
+#endif /* __GLIBC__ */
+
 void log_message(int priority, const char *format, ...)
 {
 	va_list args;
