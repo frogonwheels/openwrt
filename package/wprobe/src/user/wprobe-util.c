@@ -49,11 +49,11 @@ wprobe_dump_value(struct wprobe_attribute *attr)
 		HANDLE_TYPE(S8, "%d");
 		HANDLE_TYPE(S16, "%d");
 		HANDLE_TYPE(S32, "%d");
-		HANDLE_TYPE(S64, "%lld");
+		HANDLE_TYPE(S64, "%"PRId64);
 		HANDLE_TYPE(U8, "%d");
 		HANDLE_TYPE(U16, "%d");
 		HANDLE_TYPE(U32, "%d");
-		HANDLE_TYPE(U64, "%lld");
+		HANDLE_TYPE(U64, "%"PRId64);
 		case WPROBE_VAL_STRING:
 			/* FIXME: implement this */
 		default:
@@ -64,7 +64,7 @@ wprobe_dump_value(struct wprobe_attribute *attr)
 		(attr->val.n > 0)) {
 		int len = strlen(buf);
 		if (simple_mode)
-			snprintf(buf + len, sizeof(buf) - len, ";%.02f;%.02f;%d;%lld;%lld", attr->val.avg, attr->val.stdev, attr->val.n, attr->val.s, attr->val.ss);
+			snprintf(buf + len, sizeof(buf) - len, ";%.02f;%.02f;%d;%"PRId64";%"PRId64, attr->val.avg, attr->val.stdev, attr->val.n, attr->val.s, attr->val.ss);
 		else
 			snprintf(buf + len, sizeof(buf) - len, " (avg: %.02f; stdev: %.02f, n=%d)", attr->val.avg, attr->val.stdev, attr->val.n);
 	}
@@ -188,7 +188,7 @@ static void show_filter_simple(void *arg, const char *group, struct wprobe_filte
 
 	fprintf(stdout, "[filter:%s]\n", group);
 	for (i = 0; i < n_items; i++) {
-		fprintf(stdout, "%s=%lld;%lld\n",
+		fprintf(stdout, "%s=%"PRId64";%"PRId64"\n",
 			items[i].name, items[i].tx, items[i].rx);
 	}
 	fflush(stdout);
@@ -200,7 +200,7 @@ static void show_filter(void *arg, const char *group, struct wprobe_filter_item 
 	int i;
 	fprintf(stdout, "Filter group: '%s' (tx/rx)\n", group);
 	for (i = 0; i < n_items; i++) {
-		fprintf(stdout, " - %s (%lld/%lld)\n",
+		fprintf(stdout, " - %s (%"PRId64"/%"PRId64")\n",
 			items[i].name, items[i].tx, items[i].rx);
 	}
 }
