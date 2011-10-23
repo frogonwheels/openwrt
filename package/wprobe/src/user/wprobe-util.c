@@ -207,14 +207,13 @@ static void show_filter(void *arg, const char *group, struct wprobe_filter_item 
 
 static void loop_measurement(struct wprobe_iface *dev, bool print_filters, unsigned long delay)
 {
-	do {
+	while (1) {
+		usleep(delay * 1000);
 		wprobe_update_links(dev);
 		wprobe_dump_data(dev);
 		if (print_filters)
 			wprobe_dump_filters(dev, simple_mode ? show_filter_simple : show_filter, NULL);
-		usleep(delay * 1000);
 	}
-	while (delay);
 }
 
 static void set_filter(struct wprobe_iface *dev, const char *filename)
